@@ -31,6 +31,7 @@ export default function Dashboard() {
         <p>メールアドレス:{email}</p>
       </div>
       <SkeltonButton href='/'>ホームへ</SkeltonButton>
+      <SkeltonButton href='dashboard/company'>企業分析ページへ</SkeltonButton>
     </div>
   );
 }
