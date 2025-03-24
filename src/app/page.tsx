@@ -1,7 +1,27 @@
-import React from 'react';
+'use client';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { SkeltonButton } from '@/components/buttons/Skeltonbutton';
+import { useRouter } from 'next/navigation';
+import { successToast } from '@/lib/toast';
+import { PrimaryButton } from '@/components/buttons/PrimaryButton';
 
 export default function Home() {
+  const router = useRouter();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem('access_token');
+    setIsLoggedIn(!!token);
+  }, []);
+
+  const onClickLogout = () => {
+    localStorage.removeItem('access_token');
+    successToast('ログアウトしました。');
+    setIsLoggedIn(false);
+    router.push('/');
+  };
+
   return (
     <div className='flex flex-col items-center justify-center min-h-screen bg-gray-100 p-6'>
       <div className='bg-white shadow-lg rounded-2xl p-8 max-w-md text-center'>
@@ -11,18 +31,21 @@ export default function Home() {
           企業研究から志望理由作成までを自動化させるアプリになります。
         </p>
         <div className='mt-6 flex flex-col gap-4'>
-          <Link
-            href='/signup'
-            className='w-full px-6 py-3 text-white bg-blue-600 hover:bg-blue-700 rounded-lg text-lg font-semibold shadow-md transition'
-          >
-            新規登録
-          </Link>
-          <Link
-            href='/login'
-            className='w-full px-6 py-3 text-blue-600 border border-blue-600 hover:bg-blue-100 rounded-lg text-lg font-semibold shadow-md transition'
-          >
-            ログイン
-          </Link>
+          {!isLoggedIn && (
+            <>
+              <Link
+                href='/user/signup'
+                className='w-full px-6 py-3 text-white bg-blue-600 hover:bg-blue-700 rounded-lg text-lg font-semibold shadow-md transition'
+              >
+                新規登録
+              </Link>
+              <SkeltonButton href='/user/signin'>ログイン</SkeltonButton>{' '}
+            </>
+          )}
+
+          {isLoggedIn && (
+            <PrimaryButton onClick={onClickLogout}>ログアウト</PrimaryButton>
+          )}
         </div>
       </div>
     </div>
