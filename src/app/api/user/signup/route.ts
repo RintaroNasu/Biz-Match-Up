@@ -7,7 +7,7 @@ const JWT_SECRET = process.env.JWT_SECRET;
 export async function POST(req: NextRequest) {
   const { email, password } = await req.json();
   console.log('email:', email);
-  console.log('password:',password)
+  console.log('password:', password);
   try {
     const user = await prisma.user.create({
       data: {
