@@ -45,9 +45,7 @@ export default function Home() {
 
           {isLoggedIn && (
             <>
-              <SkeltonButton href='/dashboard'>
-                ダッシュボード
-              </SkeltonButton>
+              <SkeltonButton href='/dashboard'>ダッシュボード</SkeltonButton>
               <PrimaryButton onClick={onClickLogout}>ログアウト</PrimaryButton>
             </>
           )}
