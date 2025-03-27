@@ -29,12 +29,8 @@ export async function POST(req: NextRequest) {
     $('header a').each((_, el) => {
       const href = $(el).attr('href');
       if (href && !href.startsWith('javascript:')) {
-        try {
-          const fullUrl = new URL(href, companyUrl).toString();
-          linkSet.add(fullUrl);
-        } catch (e) {
-          console.warn(`Invalid URL skipped: ${href}`);
-        }
+        const fullUrl = new URL(href, companyUrl).toString();
+        linkSet.add(fullUrl);
       }
     });
 
@@ -55,8 +51,8 @@ export async function POST(req: NextRequest) {
 
         subPageResults.push({ url, text });
         await subPage.close();
-      } catch (err) {
-        console.warn(`Failed to fetch subpage: ${url}`, err);
+      } catch (e) {
+        return NextResponse.json(e);
       }
     }
     await browser.close();
@@ -65,11 +61,7 @@ export async function POST(req: NextRequest) {
       success: true,
       subPages: subPageResults,
     });
-  } catch (error: any) {
-    console.error('Scraping error:', error);
-    return NextResponse.json(
-      { success: false, error: error.message },
-      { status: 500 },
-    );
+  } catch (e) {
+    return NextResponse.json(e);
   }
 }
