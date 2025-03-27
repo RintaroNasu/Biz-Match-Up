@@ -34,7 +34,7 @@ export default function Home() {
           {!isLoggedIn && (
             <>
               <Link
-                href='/user/signup'
+                href='/signup'
                 className='w-full px-6 py-3 text-white bg-blue-600 hover:bg-blue-700 rounded-lg text-lg font-semibold shadow-md transition'
               >
                 新規登録
