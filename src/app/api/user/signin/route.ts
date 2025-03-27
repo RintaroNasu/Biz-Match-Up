@@ -1,11 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import jwt from 'jsonwebtoken';
+import { LoginUser } from '@/lib/types';
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
 export async function POST(req: NextRequest) {
-  const { email, password } = await req.json();
+  const body: LoginUser = await req.json();
+  const { email, password } = body;
 
   try {
     const user = await prisma.user.findUnique({
