@@ -6,22 +6,31 @@ import { signUp } from '@/lib/api/auth';
 import { errorToast, successToast } from '@/lib/toast';
 import { useRouter } from 'next/navigation';
 
-export default function SignIn() {
+export default function SignUp() {
   const router = useRouter();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [form, setForm] = useState({
+    email: '',
+    password: '',
+    name: '',
+    desiredJobType: '',
+    desiredLocation: '',
+    desiredCompanySize: '',
+    careerAxis1: '',
+    careerAxis2: '',
+    selfPr: '',
+  });
 
-  const onChangeEmail = (event: React.ChangeEvent<HTMLInputElement>) =>
-    setEmail(event.target.value);
-  const onChangePassword = (event: React.ChangeEvent<HTMLInputElement>) =>
-    setPassword(event.target.value);
-
-  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    submit();
+  const onChangeForm = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
   };
-  const submit = async () => {
-    const res = await signUp({ email, password });
+
+  const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    console.log(form);
+    const res = await signUp(form);
     const token = res?.token;
 
     if (token) {
@@ -41,20 +50,77 @@ export default function SignIn() {
         </h1>
         <form onSubmit={onSubmit} className='mt-6 flex flex-col gap-4'>
           <input
-            onChange={onChangeEmail}
+            name='email'
             type='email'
             placeholder='メールアドレス'
-            className='w-full px-4 py-3 border border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500'
+            value={form.email}
+            onChange={onChangeForm}
+            className='input'
           />
           <input
-            onChange={onChangePassword}
+            name='password'
             type='password'
             placeholder='パスワード'
-            className='w-full px-4 py-3 border border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500'
+            value={form.password}
+            onChange={onChangeForm}
+            className='input'
           />
-          <PrimaryButton disabled={!email || !password}>新規登録</PrimaryButton>
+          <input
+            name='name'
+            placeholder='名前'
+            value={form.name}
+            onChange={onChangeForm}
+            className='input'
+          />
+          <input
+            name='desiredJobType'
+            placeholder='志望職種'
+            value={form.desiredJobType}
+            onChange={onChangeForm}
+            className='input'
+          />
+          <input
+            name='desiredLocation'
+            placeholder='志望勤務地'
+            value={form.desiredLocation}
+            onChange={onChangeForm}
+            className='input'
+          />
+          <input
+            name='desiredCompanySize'
+            placeholder='志望企業の規模'
+            value={form.desiredCompanySize}
+            onChange={onChangeForm}
+            className='input'
+          />
+          <input
+            name='careerAxis1'
+            placeholder='就活軸①（任意）'
+            value={form.careerAxis1}
+            onChange={onChangeForm}
+            className='input'
+          />
+          <input
+            name='careerAxis2'
+            placeholder='就活軸②（任意）'
+            value={form.careerAxis2}
+            onChange={onChangeForm}
+            className='input'
+          />
+          <textarea
+            name='selfPr'
+            placeholder='自己PR（任意）'
+            value={form.selfPr}
+            onChange={onChangeForm}
+            className='input h-24'
+          />
+          <PrimaryButton disabled={!form.email || !form.password || !form.name}>
+            新規登録
+          </PrimaryButton>
         </form>
-        <Link href='/'>TOPへ</Link>
+        <Link href='/' className='mt-4 block text-blue-500'>
+          TOPへ
+        </Link>
       </div>
     </div>
   );

@@ -1,4 +1,6 @@
-export const signUp = async (body: { email: string; password: string }) => {
+import { LoginUser, RegisterUser } from '../types';
+
+export const signUp = async (body: RegisterUser) => {
   const url = 'http://localhost:3000/api/user/signup';
 
   const data = await fetch(url, {
@@ -12,7 +14,7 @@ export const signUp = async (body: { email: string; password: string }) => {
   return data.json();
 };
 
-export const signIn = async (body: { email: string; password: string }) => {
+export const signIn = async (body: LoginUser) => {
   const url = 'http://localhost:3000/api/user/signin';
 
   const data = await fetch(url, {
