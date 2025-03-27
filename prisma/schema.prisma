@@ -17,4 +17,11 @@ model User {
   id    Int     @id @default(autoincrement())
   email String  @unique
   password   String
+  name                 String?
+  desiredJobType       String?
+  desiredLocation    String?
+  desiredCompanySize String?
+  careerAxis1          String?
+  careerAxis2          String?
+  selfPr               String?
 }
