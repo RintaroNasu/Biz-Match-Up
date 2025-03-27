@@ -24,6 +24,8 @@ export default function Company() {
     try {
       const res = await companyScrape({ companyUrl });
       setCompanyInfo(res.subPages);
+    } catch (e) {
+      console.error(e);
     } finally {
       setIsLoading(false);
     }
