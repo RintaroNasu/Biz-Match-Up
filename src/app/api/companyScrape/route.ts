@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
         try {
           const fullUrl = new URL(href, companyUrl).toString();
           linkSet.add(fullUrl);
-        } catch (e) {
+        } catch (_) {
           // console.warn(`Invalid URL skipped: ${href}`);
         }
       }
@@ -55,8 +55,8 @@ export async function POST(req: NextRequest) {
 
         subPageResults.push({ url, text });
         await subPage.close();
-      } catch (err) {
-        // console.warn(`Failed to fetch subpage: ${url}`, err);
+      } catch (e) {
+        return NextResponse.json(e);
       }
     }
     await browser.close();
@@ -65,11 +65,7 @@ export async function POST(req: NextRequest) {
       success: true,
       subPages: subPageResults,
     });
-  } catch (error: any) {
-    // console.error('Scraping error:', error);
-    return NextResponse.json(
-      { success: false, error: error.message },
-      { status: 500 },
-    );
+  } catch (e) {
+    return NextResponse.json(e);
   }
 }

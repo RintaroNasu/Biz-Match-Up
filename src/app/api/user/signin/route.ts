@@ -33,9 +33,6 @@ export async function POST(req: NextRequest) {
       );
     }
   } catch (e) {
-    return NextResponse.json(
-      { error: 'ログイン処理中にエラーが発生しました' },
-      { status: 500 },
-    );
+    return NextResponse.json(e);
   }
 }
