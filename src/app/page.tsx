@@ -39,12 +39,17 @@ export default function Home() {
               >
                 新規登録
               </Link>
-              <SkeltonButton href='/user/signin'>ログイン</SkeltonButton>{' '}
+              <SkeltonButton href='/signin'>ログイン</SkeltonButton>
             </>
           )}
 
           {isLoggedIn && (
-            <PrimaryButton onClick={onClickLogout}>ログアウト</PrimaryButton>
+            <>
+              <SkeltonButton href='/dashboard'>
+                ダッシュボード
+              </SkeltonButton>
+              <PrimaryButton onClick={onClickLogout}>ログアウト</PrimaryButton>
+            </>
           )}
         </div>
       </div>
