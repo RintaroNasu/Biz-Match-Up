@@ -14,6 +14,7 @@ export default function Dashboard() {
     const token = localStorage.getItem('access_token');
     if (token && token.split('.').length === 3) {
       const decodedUser = jwtDecode<{
+        id: number;
         email: string;
         iat: number;
         exp: number;
