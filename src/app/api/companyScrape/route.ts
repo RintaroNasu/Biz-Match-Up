@@ -29,12 +29,8 @@ export async function POST(req: NextRequest) {
     $('header a').each((_, el) => {
       const href = $(el).attr('href');
       if (href && !href.startsWith('javascript:')) {
-        try {
-          const fullUrl = new URL(href, companyUrl).toString();
-          linkSet.add(fullUrl);
-        } catch (_) {
-          // console.warn(`Invalid URL skipped: ${href}`);
-        }
+        const fullUrl = new URL(href, companyUrl).toString();
+        linkSet.add(fullUrl);
       }
     });
 
