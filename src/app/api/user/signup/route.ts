@@ -6,8 +6,6 @@ const JWT_SECRET = process.env.JWT_SECRET;
 
 export async function POST(req: NextRequest) {
   const { email, password } = await req.json();
-  console.log('email:', email);
-  console.log('password:', password);
   try {
     const user = await prisma.user.create({
       data: {
@@ -15,7 +13,6 @@ export async function POST(req: NextRequest) {
         password,
       },
     });
-    console.log('user:', user);
     if (JWT_SECRET) {
       const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, {
         expiresIn: '1h',

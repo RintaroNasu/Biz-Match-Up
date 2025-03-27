@@ -23,10 +23,8 @@ export default function Company() {
     setIsLoading(true);
     try {
       const res = await companyScrape({ companyUrl });
-      console.log(res);
       setCompanyInfo(res.subPages);
     } catch (err) {
-      console.error(err);
     } finally {
       setIsLoading(false);
     }
