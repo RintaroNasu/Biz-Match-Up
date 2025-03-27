@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { jwtDecode } from 'jwt-decode';
-import { User, Building } from 'lucide-react';
+import { User, Building, Link } from 'lucide-react';
 import { SkeltonButton } from '@/components/buttons/Skeltonbutton';
 
 export default function Dashboard() {
@@ -14,6 +14,7 @@ export default function Dashboard() {
     const token = localStorage.getItem('access_token');
     if (token && token.split('.').length === 3) {
       const decodedUser = jwtDecode<{
+        id: number;
         email: string;
         iat: number;
         exp: number;
