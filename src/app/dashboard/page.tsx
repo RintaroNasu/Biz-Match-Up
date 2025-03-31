@@ -28,10 +28,7 @@ export default function Dashboard() {
 
   return (
     <div className='py-8 px-20'>
-      <Link
-        href='/'
-        className='flex items-center gap-2 text-blue-600 mb-6'
-      >
+      <Link href='/' className='flex items-center gap-2 text-blue-600 mb-6'>
         <ArrowLeft />
         <span>TOPに戻る</span>
       </Link>
