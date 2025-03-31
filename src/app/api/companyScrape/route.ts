@@ -134,11 +134,7 @@ export async function POST(req: NextRequest) {
     const result = chatRes.choices[0].message.content;
     console.log('result:', result);
     return NextResponse.json({ success: true, matchResult: result });
-  } catch (error: any) {
-    console.error('Error:', error);
-    return NextResponse.json(
-      { success: false, error: error.message },
-      { status: 500 },
-    );
+  } catch (e) {
+    return NextResponse.json(e);
   }
 }
