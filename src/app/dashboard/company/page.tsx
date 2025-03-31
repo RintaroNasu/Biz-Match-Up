@@ -6,9 +6,7 @@ import { companyScrape } from '@/lib/api/companyScrape';
 
 export default function Company() {
   const [companyUrl, setCompanyUrl] = useState('');
-  const [companyInfo, setCompanyInfo] = useState<
-    { url: string; text: string }[]
-  >([]);
+  const [matchResult, setMatchResult] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   const onChangeCompanyUrl = (event: React.ChangeEvent<HTMLInputElement>) =>
@@ -23,7 +21,8 @@ export default function Company() {
     setIsLoading(true);
     try {
       const res = await companyScrape({ companyUrl });
-      setCompanyInfo(res.subPages);
+      console.log('res', res);
+      setMatchResult(res.matchResult || '');
     } catch (e) {
       console.error(e);
     } finally {
@@ -63,33 +62,12 @@ export default function Company() {
           )}
         </PrimaryButton>
       </form>
-
       <div>
-        <p className='font-semibold text-gray-600 mb-2'>結果:</p>
-        {companyInfo.length > 0 ? (
-          <div className='space-y-4'>
-            {companyInfo.map((item, index) => (
-              <div
-                key={index}
-                className='p-4 border border-blue-200 bg-blue-50 rounded-lg shadow'
-              >
-                <p className='font-medium text-blue-800'>
-                  URL:{' '}
-                  <a
-                    href={item.url}
-                    target='_blank'
-                    rel='noopener noreferrer'
-                    className='underline hover:text-blue-500'
-                  >
-                    {item.url}
-                  </a>
-                </p>
-                <p className='text-gray-700 whitespace-pre-wrap mt-2'>
-                  {item.text}
-                </p>
-              </div>
-            ))}
-          </div>
+        <p className='font-semibold text-gray-600 mb-2'>分析結果:</p>
+        {matchResult ? (
+          <pre className='whitespace-pre-wrap text-sm text-gray-800'>
+            {matchResult}
+          </pre>
         ) : (
           <p className='text-sm text-gray-500'>まだ情報がありません。</p>
         )}

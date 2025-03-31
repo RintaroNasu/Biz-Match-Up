@@ -3,8 +3,9 @@
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { jwtDecode } from 'jwt-decode';
-import { User, Building } from 'lucide-react';
+import { User, Building, ArrowLeft } from 'lucide-react';
 import { SkeltonButton } from '@/components/buttons/Skeltonbutton';
+import Link from 'next/link';
 
 export default function Dashboard() {
   const router = useRouter();
@@ -27,9 +28,11 @@ export default function Dashboard() {
 
   return (
     <div className='py-8 px-20'>
+      <Link href='/' className='flex items-center gap-2 text-blue-600 mb-6'>
+        <ArrowLeft />
+        <span>TOPに戻る</span>
+      </Link>
       <h1 className='text-3xl font-bold mb-8'>ダッシュボード</h1>
-
-      {/* Profile Section */}
       <div className='bg-white rounded-lg shadow-md p-6 mb-8'>
         <div className='flex items-center gap-4 mb-4'>
           <div className='bg-blue-100 p-3 rounded-full'>
@@ -43,8 +46,6 @@ export default function Dashboard() {
 
         <SkeltonButton href='/profile/edit'>プロフィールを編集</SkeltonButton>
       </div>
-
-      {/* Company Analysis Link */}
       <div className='bg-white rounded-lg shadow-md p-6 mb-8'>
         <div className='flex items-center justify-between'>
           <div className='flex items-center gap-4'>
@@ -56,7 +57,6 @@ export default function Dashboard() {
           <SkeltonButton href='/dashboard/company'>詳細へ</SkeltonButton>
         </div>
       </div>
-
       <h2 className='text-2xl font-bold mb-4'>志望企業</h2>
     </div>
   );
