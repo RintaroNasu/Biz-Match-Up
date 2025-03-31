@@ -3,15 +3,15 @@ import prisma from '@/lib/prisma';
 
 export async function POST(
   req: NextRequest,
-  context: { params: { userId: string } },
+  { params }: { params: { userId: string } },
 ) {
+  const userId = (await params).userId;
+  const parsedUserId = parseInt(userId);
   const body = await req.json();
-
-  const userId = parseInt(context.params.userId);
 
   try {
     const updatedUser = await prisma.user.update({
-      where: { id: userId },
+      where: { id: parsedUserId },
       data: body,
     });
 
