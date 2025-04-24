@@ -3,7 +3,7 @@ import puppeteer from 'puppeteer';
 import { load } from 'cheerio';
 import { OpenAI } from 'openai';
 import jwt from 'jsonwebtoken';
-import prisma from '@/lib/prisma';
+import prisma from '../../../lib/prisma';
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY! });
 

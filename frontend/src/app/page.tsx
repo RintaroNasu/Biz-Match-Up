@@ -1,10 +1,10 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { SkeltonButton } from '@/components/buttons/Skeltonbutton';
+import { SkeltonButton } from '../components/buttons/Skeltonbutton';
 import { useRouter } from 'next/navigation';
-import { successToast } from '@/lib/toast';
-import { PrimaryButton } from '@/components/buttons/PrimaryButton';
+import { successToast } from '../lib/toast';
+import { PrimaryButton } from '../components/buttons/PrimaryButton';
 
 export default function Home() {
   const router = useRouter();

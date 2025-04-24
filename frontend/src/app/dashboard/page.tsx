@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { jwtDecode } from 'jwt-decode';
 import { User, Building, ArrowLeft } from 'lucide-react';
-import { SkeltonButton } from '@/components/buttons/Skeltonbutton';
+import { SkeltonButton } from '../../components/buttons/Skeltonbutton';
 import Link from 'next/link';
 
 export default function Dashboard() {

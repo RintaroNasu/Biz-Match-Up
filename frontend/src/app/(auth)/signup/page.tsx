@@ -1,9 +1,9 @@
 'use client';
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { PrimaryButton } from '@/components/buttons/PrimaryButton';
-import { signUp } from '@/lib/api/auth';
-import { errorToast, successToast } from '@/lib/toast';
+import { PrimaryButton } from '../../../components/buttons/PrimaryButton';
+import { signUp } from '../../../lib/api/auth';
+import { errorToast, successToast } from '../../../lib/toast';
 import { useRouter } from 'next/navigation';
 
 export default function SignUp() {

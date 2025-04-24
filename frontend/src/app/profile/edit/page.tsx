@@ -1,12 +1,12 @@
 'use client';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
-import { PrimaryButton } from '@/components/buttons/PrimaryButton';
+import { PrimaryButton } from '../../../components/buttons/PrimaryButton';
 import { useEffect, useState } from 'react';
 import { jwtDecode } from 'jwt-decode';
 import { useRouter } from 'next/navigation';
-import { editUserProfile } from '@/lib/api/user';
-import { UserProfileUpdate } from '@/lib/types';
+import { editUserProfile } from '../../../lib/api/user';
+import { UserProfileUpdate } from '../../../lib/types';
 
 export default function EditProfile() {
   const router = useRouter();

@@ -1,10 +1,10 @@
 'use client';
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { PrimaryButton } from '@/components/buttons/PrimaryButton';
+import { PrimaryButton } from '../../../components/buttons/PrimaryButton';
 import { useRouter } from 'next/navigation';
-import { signIn } from '@/lib/api/auth';
-import { errorToast, successToast } from '@/lib/toast';
+import { signIn } from '../../../lib/api/auth';
+import { errorToast, successToast } from '../../../lib/toast';
 
 export default function SignIn() {
   const router = useRouter();

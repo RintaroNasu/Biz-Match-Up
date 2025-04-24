@@ -1,8 +1,8 @@
 'use client';
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { PrimaryButton } from '@/components/buttons/PrimaryButton';
-import { companyScrape } from '@/lib/api/companyScrape';
+import { PrimaryButton } from '../../../components/buttons/PrimaryButton';
+import { companyScrape } from '../../../lib/api/companyScrape';
 
 export default function Company() {
   const [companyUrl, setCompanyUrl] = useState('');
