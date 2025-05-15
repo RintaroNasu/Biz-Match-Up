@@ -8,6 +8,10 @@ jobs:
     name: Run ESLint & Prettier
     runs-on: ubuntu-latest
 
+    defaults:
+      run:
+        working-directory: frontend
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
