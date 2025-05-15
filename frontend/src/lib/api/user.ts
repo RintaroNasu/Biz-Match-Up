@@ -4,7 +4,7 @@ export const editUserProfile = async (
   userId: number,
   body: UserProfileUpdate,
 ) => {
-  const url = `http://localhost:3000/api/profile/${userId}`;
+  const url = `http://localhost:8080/api/profile/${userId}`;
 
   const data = await fetch(url, {
     method: 'POST',

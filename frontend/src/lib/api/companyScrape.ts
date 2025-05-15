@@ -1,5 +1,5 @@
 export const companyScrape = async (body: { companyUrl: string }) => {
-  const url = 'http://localhost:3000/api/companyScrape';
+  const url = 'http://localhost:8080/api/company-scrape';
   const token = localStorage.getItem('access_token');
 
   const data = await fetch(url, {
