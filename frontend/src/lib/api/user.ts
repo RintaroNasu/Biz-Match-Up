@@ -28,4 +28,4 @@ export const getUserProfile = async (userId: number) => {
   });
 
   return data.json();
-}
+};
