@@ -7,6 +7,7 @@ import { jwtDecode } from 'jwt-decode';
 import { useRouter } from 'next/navigation';
 import { editUserProfile, getUserProfile } from '../../../lib/api/user';
 import { UserProfileUpdate } from '../../../lib/types';
+import { errorToast, successToast } from '@/lib/toast';
 
 export default function EditProfile() {
   const router = useRouter();
@@ -66,6 +67,11 @@ export default function EditProfile() {
     if (!userId) return;
     try {
       const res = await editUserProfile(userId, form);
+      if (res.success) {
+        successToast('プロフィールを更新しました');
+      } else {
+        errorToast('プロフィールの更新に失敗しました');
+      }
     } catch (err) {
       console.error('プロフィール更新エラー:', err);
     }
