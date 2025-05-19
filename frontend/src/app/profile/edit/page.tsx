@@ -5,26 +5,44 @@ import { PrimaryButton } from '../../../components/buttons/PrimaryButton';
 import { useEffect, useState } from 'react';
 import { jwtDecode } from 'jwt-decode';
 import { useRouter } from 'next/navigation';
-import { editUserProfile } from '../../../lib/api/user';
+import { editUserProfile, getUserProfile } from '../../../lib/api/user';
 import { UserProfileUpdate } from '../../../lib/types';
+import { errorToast, successToast } from '@/lib/toast';
 
 export default function EditProfile() {
   const router = useRouter();
   const [userId, setUserId] = useState<number | null>(null);
 
   useEffect(() => {
-    const token = localStorage.getItem('access_token');
-    if (token && token.split('.').length === 3) {
-      const decodedUser = jwtDecode<{
-        id: number;
-        email: string;
-        iat: number;
-        exp: number;
-      }>(token);
-      setUserId(decodedUser.id);
-    } else if (!token) {
-      router.push('/');
-    }
+    const fetchData = async () => {
+      const token = localStorage.getItem('access_token');
+      if (token && token.split('.').length === 3) {
+        const decodedUser = jwtDecode<{
+          id: number;
+          email: string;
+          iat: number;
+          exp: number;
+        }>(token);
+        setUserId(decodedUser.id);
+        if (decodedUser.id) {
+          const res = await getUserProfile(decodedUser.id);
+          if (res.user) {
+            setForm({
+              name: res.user.Name || '',
+              desiredJobType: res.user.DesiredJobType || '',
+              desiredLocation: res.user.DesiredLocation || '',
+              desiredCompanySize: res.user.DesiredCompanySize || '',
+              careerAxis1: res.user.CareerAxis1 || '',
+              careerAxis2: res.user.CareerAxis2 || '',
+              selfPr: res.user.SelfPr || '',
+            });
+          }
+        }
+      } else if (!token) {
+        router.push('/');
+      }
+    };
+    fetchData();
   }, [router]);
 
   const [form, setForm] = useState<UserProfileUpdate>({
@@ -49,7 +67,11 @@ export default function EditProfile() {
     if (!userId) return;
     try {
       const res = await editUserProfile(userId, form);
-      console.log('プロフィール更新成功:', res);
+      if (res.success) {
+        successToast('プロフィールを更新しました');
+      } else {
+        errorToast('プロフィールの更新に失敗しました');
+      }
     } catch (err) {
       console.error('プロフィール更新エラー:', err);
     }
