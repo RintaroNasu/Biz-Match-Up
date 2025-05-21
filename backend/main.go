@@ -28,6 +28,6 @@ func main() {
 	apiGroup.POST("/company-scrape", handlers.CompanyScrape(db))
 	apiGroup.POST("/profile/:id", handlers.EditUserProfile(db))
 	apiGroup.GET("/profile/:id", handlers.GetUserProfile(db))
-	
+
 	e.Logger.Fatal(e.Start(":8080"))
 }
