@@ -22,3 +22,8 @@ export interface UserProfileUpdate {
   careerAxis2: string;
   selfPr: string;
 }
+export type MatchItem = {
+  axis: string;
+  score: number;
+  reason: string;
+};
