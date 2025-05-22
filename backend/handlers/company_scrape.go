@@ -3,6 +3,7 @@ package handlers
 import (
 	"backend/models"
 	"context"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -26,6 +27,11 @@ type companyReq struct {
 type pageInfo struct {
 	URL  string `json:"url"`
 	Text string `json:"text"`
+}
+type MatchItem struct {
+	Axis   string `json:"axis"`
+	Score  int    `json:"score"`
+	Reason string `json:"reason"`
 }
 
 var reImportant = regexp.MustCompile(`(?i)recruit|job|vision|engineer|business|services|technology|interview|message|culture|about|company|profile|corporate|access|location|history`)
@@ -149,35 +155,53 @@ func CompanyScrape(db *gorm.DB) echo.HandlerFunc {
 		}
 		formattedPages := sb.String()
 		fmt.Println("formattedPages:", formattedPages)
-
 		prompt := strings.TrimSpace(`
-      以下のユーザープロフィールと企業のWebページ情報をもとに、次の評価軸でマッチ度（★1〜5）を出してください。
-
-      【評価軸】
-      1. 専門領域での開発
-      2. 裁量権・自由度
-      3. 勤務地
-      4. 会社の規模
-
-      【ユーザー情報】
-      名前: ` + coalesce(user.Name) + `
-      志望職種: ` + coalesce(user.DesiredJobType) + `
-      志望勤務地: ` + coalesce(user.DesiredLocation) + `
-      志望企業の規模: ` + coalesce(user.DesiredCompanySize) + `
-      就活軸①: ` + coalesce(user.CareerAxis1) + `
-      就活軸②: ` + coalesce(user.CareerAxis2) + `
-      自己PR: ` + coalesce(user.SelfPr) + `
-
-      【企業情報（Webページから抽出）】
-      ` + formattedPages + `
-      各評価軸ごとに以下の形式で回答してください:
-
-      例）
-      1. 専門領域での開発: ★★★★☆
-      理由: 〇〇
-      2. 裁量権・自由度: ★★☆☆☆
-      理由: △△ 
-    `)
+			以下のユーザープロフィールと企業のWebページ情報をもとに、次の評価軸でマッチ度（1〜5の数値）と理由をJSON形式で出力してください。
+			
+			【評価軸】
+			1. 専門領域での開発
+			2. 裁量権・自由度
+			3. 勤務地
+			4. 会社の規模
+			
+			【ユーザー情報】
+			名前: ` + coalesce(user.Name) + `
+			志望職種: ` + coalesce(user.DesiredJobType) + `
+			志望勤務地: ` + coalesce(user.DesiredLocation) + `
+			志望企業の規模: ` + coalesce(user.DesiredCompanySize) + `
+			就活軸①: ` + coalesce(user.CareerAxis1) + `
+			就活軸②: ` + coalesce(user.CareerAxis2) + `
+			自己PR: ` + coalesce(user.SelfPr) + `
+			
+			【企業情報（Webページから抽出）】
+			` + formattedPages + `
+			
+			以下のようなJSON形式で出力してください:
+			コードブロックなどで囲まず、そのままJSON形式で出力してください。
+			
+			[
+				{
+					"axis": "専門領域での開発",
+					"score": 4,
+					"reason": "△△"
+				},
+				{
+					"axis": "裁量権・自由度",
+					"score": 2,
+					"reason": "△△"
+				},
+				{
+					"axis": "勤務地",
+					"score": 1,
+					"reason": "△△"
+				},
+				{
+					"axis": "会社の規模",
+					"score": 5,
+					"reason": "△△"
+				}
+			]
+		`)
 
 		fmt.Println("prompt:", prompt)
 
@@ -195,12 +219,20 @@ func CompanyScrape(db *gorm.DB) echo.HandlerFunc {
 		if err != nil {
 			return c.JSON(http.StatusInternalServerError, echo.Map{"error": "openai error"})
 		}
+		rawContent := resp.Choices[0].Message.Content
+
+		var parsedResult []MatchItem
+		if err := json.Unmarshal([]byte(rawContent), &parsedResult); err != nil {
+			return c.JSON(http.StatusInternalServerError, echo.Map{
+				"success": false,
+				"error":   "JSONパース失敗: " + err.Error(),
+			})
+		}
 
 		return c.JSON(http.StatusOK, echo.Map{
 			"success":     true,
-			"matchResult": resp.Choices[0].Message.Content,
+			"matchResult": parsedResult,
 		})
-
 	}
 }
 

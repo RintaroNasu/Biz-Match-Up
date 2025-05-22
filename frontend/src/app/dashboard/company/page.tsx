@@ -3,10 +3,11 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { PrimaryButton } from '../../../components/buttons/PrimaryButton';
 import { companyScrape } from '../../../lib/api/companyScrape';
+import { MatchItem } from '@/lib/types';
 
 export default function Company() {
   const [companyUrl, setCompanyUrl] = useState('');
-  const [matchResult, setMatchResult] = useState('');
+  const [matchResult, setMatchResult] = useState<MatchItem[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   const onChangeCompanyUrl = (event: React.ChangeEvent<HTMLInputElement>) =>
@@ -64,13 +65,20 @@ export default function Company() {
       </form>
       <div>
         <p className='font-semibold text-gray-600 mb-2'>分析結果:</p>
-        {matchResult ? (
-          <pre className='whitespace-pre-wrap text-sm text-gray-800'>
-            {matchResult}
-          </pre>
-        ) : (
-          <p className='text-sm text-gray-500'>まだ情報がありません。</p>
-        )}
+        <div className='space-y-4'>
+          {matchResult.map((item, index) => (
+            <div
+              key={index}
+              className='p-4 border rounded-md shadow-sm bg-white'
+            >
+              <h3 className='font-bold text-blue-700 underline'>
+                {item.axis}:{'★'.repeat(item.score)}
+                {'☆'.repeat(5 - item.score)}
+              </h3>
+              <p className='text-gray-700 mt-1'>{item.reason}</p>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
