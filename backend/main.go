@@ -27,6 +27,8 @@ func main() {
 	apiGroup.POST("/signin", handlers.SignIn(db))
 	apiGroup.POST("/company-scrape", handlers.CompanyScrape(db))
 	apiGroup.POST("/generate-reasons", handlers.GenerateReasons(db))
+	apiGroup.POST("/reason", handlers.PostReasons(db))
+	apiGroup.GET("/reasons", handlers.GetReasons(db))
 	apiGroup.POST("/profile/:id", handlers.EditUserProfile(db))
 	apiGroup.GET("/profile/:id", handlers.GetUserProfile(db))
 

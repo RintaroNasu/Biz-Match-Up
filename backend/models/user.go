@@ -11,4 +11,5 @@ type User struct {
 	CareerAxis1        *string
 	CareerAxis2        *string
 	SelfPr             *string
+	Reasons            []Reason `gorm:"foreignKey:UserID"`
 }
