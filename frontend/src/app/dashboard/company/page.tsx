@@ -2,8 +2,13 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { PrimaryButton } from '../../../components/buttons/PrimaryButton';
-import { companyScrape, generateReasons } from '../../../lib/api/company';
+import {
+  companyScrape,
+  generateReasons,
+  postReasons,
+} from '../../../lib/api/company';
 import { MatchItem } from '@/lib/types';
+import { errorToast, successToast } from '@/lib/toast';
 
 export default function Company() {
   const [companyUrl, setCompanyUrl] = useState('');
@@ -17,6 +22,7 @@ export default function Company() {
     relatedExperience: '',
   });
   const [companyReasons, setCompanyReasons] = useState('');
+  const [companyName, setCompanyName] = useState('');
   const onChangeCompanyUrl = (event: React.ChangeEvent<HTMLInputElement>) =>
     setCompanyUrl(event.target.value);
 
@@ -49,6 +55,20 @@ export default function Company() {
     }
   };
 
+  const onClickPostReasons = async () => {
+    try {
+      const res = await postReasons({
+        content: companyReasons,
+        companyName,
+        companyUrl,
+      });
+      successToast('保存に成功しました。');
+    } catch (e) {
+      console.error('志望理由の保存に失敗:', e);
+      errorToast('保存に失敗しました。');
+    }
+  };
+
   return (
     <div className='max-w-3xl mx-auto px-4 py-8'>
       <Link
@@ -72,6 +92,13 @@ export default function Company() {
           onChange={onChangeCompanyUrl}
           placeholder='企業のURLを入力してください'
           className='w-full sm:flex-1 px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400'
+        />
+        <input
+          type='text'
+          value={companyName}
+          onChange={(e) => setCompanyName(e.target.value)}
+          placeholder='企業名を入力してください'
+          className='w-full sm:flex-1 px-4 py-2 border border-gray-300 rounded-md shadow-sm'
         />
         <PrimaryButton type='submit' disabled={isScraping}>
           {isScraping ? (
@@ -175,9 +202,7 @@ export default function Company() {
             rows={6}
           />
           <div className='text-right mt-2'>
-            <PrimaryButton onClick={() => alert('保存しました！')}>
-              保存
-            </PrimaryButton>
+            <PrimaryButton onClick={onClickPostReasons}>保存</PrimaryButton>
           </div>
         </div>
       )}

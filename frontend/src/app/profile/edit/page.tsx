@@ -186,7 +186,7 @@ export default function EditProfile() {
             </div>
 
             <div className='text-right'>
-              <PrimaryButton>保存する</PrimaryButton>
+              <PrimaryButton type='submit'>保存する</PrimaryButton>
             </div>
           </form>
         </div>
