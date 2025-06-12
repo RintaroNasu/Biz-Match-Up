@@ -1,4 +1,4 @@
-import { MatchItem } from "../types";
+import { MatchItem } from '../types';
 
 export const companyScrape = async (body: { companyUrl: string }) => {
   const url = 'http://localhost:8080/api/company-scrape';
