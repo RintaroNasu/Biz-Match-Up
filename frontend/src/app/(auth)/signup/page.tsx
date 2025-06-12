@@ -29,7 +29,6 @@ export default function SignUp() {
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log(form);
     const res = await signUp(form);
     const token = res?.token;
 
@@ -114,7 +113,10 @@ export default function SignUp() {
             onChange={onChangeForm}
             className='input h-24'
           />
-          <PrimaryButton disabled={!form.email || !form.password || !form.name}>
+          <PrimaryButton
+            type='submit'
+            disabled={!form.email || !form.password || !form.name}
+          >
             新規登録
           </PrimaryButton>
         </form>

@@ -1,4 +1,5 @@
 type Props = {
+  type?: 'button' | 'submit';
   className?: string;
   children: React.ReactNode;
   disabled?: boolean;
@@ -8,6 +9,7 @@ type Props = {
 export const PrimaryButton = (props: Props) => {
   return (
     <button
+      type={props.type || 'button'}
       onClick={props.onClick}
       disabled={props.disabled}
       className={`px-6 py-3 text-white  rounded-lg text-lg font-semibold shadow-md transition cursor-pointer
