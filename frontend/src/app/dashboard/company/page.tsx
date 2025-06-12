@@ -57,7 +57,7 @@ export default function Company() {
 
   const onClickPostReasons = async () => {
     try {
-      const res = await postReasons({
+      await postReasons({
         content: companyReasons,
         companyName,
         companyUrl,
