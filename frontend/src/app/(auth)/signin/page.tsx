@@ -51,7 +51,9 @@ export default function SignIn() {
             placeholder='パスワード'
             className='w-full px-4 py-3 border border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500'
           />
-          <PrimaryButton disabled={!email || !password}>ログイン</PrimaryButton>
+          <PrimaryButton type='submit' disabled={!email || !password}>
+            ログイン
+          </PrimaryButton>
         </form>
         <Link href='/'>TOPへ</Link>
       </div>
