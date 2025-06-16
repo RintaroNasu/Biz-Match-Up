@@ -1,24 +1,28 @@
 'use client';
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { PrimaryButton } from '../../../components/buttons/PrimaryButton';
-import { signUp } from '../../../lib/api/auth';
-import { errorToast, successToast } from '../../../lib/toast';
 import { useRouter } from 'next/navigation';
+import { PrimaryButton } from '@/components/buttons/PrimaryButton';
+import { signUp } from '@/lib/api/auth';
+import { errorToast, successToast } from '@/lib/toast';
+import { RegisterUser } from '@/lib/types';
+
+const defaultForm: RegisterUser = {
+  email: '',
+  password: '',
+  name: '',
+  desiredJobType: '',
+  desiredLocation: '',
+  desiredCompanySize: '',
+  careerAxis1: '',
+  careerAxis2: '',
+  selfPr: '',
+};
 
 export default function SignUp() {
   const router = useRouter();
-  const [form, setForm] = useState({
-    email: '',
-    password: '',
-    name: '',
-    desiredJobType: '',
-    desiredLocation: '',
-    desiredCompanySize: '',
-    careerAxis1: '',
-    careerAxis2: '',
-    selfPr: '',
-  });
+
+  const [form, setForm] = useState(defaultForm);
 
   const onChangeForm = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,

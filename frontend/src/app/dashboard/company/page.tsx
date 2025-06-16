@@ -1,15 +1,21 @@
 'use client';
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { PrimaryButton } from '../../../components/buttons/PrimaryButton';
+import { PrimaryButton } from '@/components/buttons/PrimaryButton';
+import { useAuthCheck } from '@/hooks/useAuthCheck';
 import {
   companyScrape,
   generateReasons,
-  postReasons,
-} from '../../../lib/api/company';
+  createCompanyReason,
+} from '@/lib/api/company';
 import { MatchItem } from '@/lib/types';
 import { errorToast, successToast } from '@/lib/toast';
-import { useAuthCheck } from '@/hooks/useAuthCheck';
+
+const defaultQuestions = {
+  reasonInterest: '',
+  attractiveService: '',
+  relatedExperience: '',
+};
 
 export default function Company() {
   useAuthCheck();
@@ -18,11 +24,7 @@ export default function Company() {
   const [isScraping, setIsScraping] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [showQuestions, setShowQuestions] = useState(false);
-  const [questions, setQuestions] = useState({
-    reasonInterest: '',
-    attractiveService: '',
-    relatedExperience: '',
-  });
+  const [questions, setQuestions] = useState(defaultQuestions);
   const [companyReasons, setCompanyReasons] = useState('');
   const [companyName, setCompanyName] = useState('');
   const onChangeCompanyUrl = (event: React.ChangeEvent<HTMLInputElement>) =>
@@ -59,7 +61,7 @@ export default function Company() {
 
   const onClickPostReasons = async () => {
     try {
-      await postReasons({
+      await createCompanyReason({
         content: companyReasons,
         companyName,
         companyUrl,
