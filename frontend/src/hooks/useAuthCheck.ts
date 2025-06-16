@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import { jwtDecode } from 'jwt-decode';
 import { useRouter } from 'next/navigation';
-import { error } from 'console';
 import { errorToast } from '@/lib/toast';
 
 type DecodedUser = {
