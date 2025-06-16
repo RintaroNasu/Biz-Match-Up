@@ -1,49 +1,37 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { jwtDecode } from 'jwt-decode';
 import { User, Building, ArrowLeft } from 'lucide-react';
 import { SkeltonButton } from '../../components/buttons/Skeltonbutton';
 import Link from 'next/link';
 import { getReasons } from '@/lib/api/company';
+import { useAuthCheck } from '@/hooks/useAuthCheck';
+
+type Reason = {
+  ID: number;
+  Content: string;
+  CreatedAt: string;
+  CompanyName: string;
+  CompanyUrl: string;
+};
 
 export default function Dashboard() {
-  const router = useRouter();
-  const [email, setEmail] = useState<string>('');
-  const [reasons, setReasons] = useState<
-    {
-      ID: number;
-      Content: string;
-      CreatedAt: string;
-      CompanyName: string;
-      CompanyUrl: string;
-    }[]
-  >([]);
+  const { user } = useAuthCheck();
+  const [reasons, setReasons] = useState<Reason[]>([]);
 
   useEffect(() => {
-    const token = localStorage.getItem('access_token');
-    if (token && token.split('.').length === 3) {
-      const decodedUser = jwtDecode<{
-        id: number;
-        email: string;
-        iat: number;
-        exp: number;
-      }>(token);
-      setEmail(decodedUser.email);
-
-      (async () => {
-        try {
-          const res = await getReasons();
-          setReasons(res);
-        } catch (error) {
-          console.error('理由取得失敗:', error);
-        }
-      })();
-    } else if (!token) {
-      router.push('/');
+    const fetchReasons = async () => {
+      try {
+        const res = await getReasons();
+        setReasons(res);
+      } catch (error) {
+        console.error('理由取得失敗:', error);
+      }
+    };
+    if (user) {
+      fetchReasons();
     }
-  }, [router]);
+  }, [user]);
 
   return (
     <div className='py-8 px-20'>
@@ -59,7 +47,7 @@ export default function Dashboard() {
           </div>
           <div>
             <h2 className='text-xl font-semibold'>プロフィール</h2>
-            <p className='text-gray-600'>{email}</p>
+            <p className='text-gray-600'>{user?.email}</p>
           </div>
         </div>
 

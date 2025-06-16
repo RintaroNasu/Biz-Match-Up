@@ -3,57 +3,47 @@ import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import { PrimaryButton } from '../../../components/buttons/PrimaryButton';
 import { useEffect, useState } from 'react';
-import { jwtDecode } from 'jwt-decode';
-import { useRouter } from 'next/navigation';
 import { editUserProfile, getUserProfile } from '../../../lib/api/user';
 import { UserProfileUpdate } from '../../../lib/types';
 import { errorToast, successToast } from '@/lib/toast';
+import { useAuthCheck } from '@/hooks/useAuthCheck';
+
+const defaultForm: UserProfileUpdate = {
+  name: '',
+  desiredJobType: '',
+  desiredLocation: '',
+  desiredCompanySize: '',
+  careerAxis1: '',
+  careerAxis2: '',
+  selfPr: '',
+};
 
 export default function EditProfile() {
-  const router = useRouter();
-  const [userId, setUserId] = useState<number | null>(null);
+  const { user } = useAuthCheck();
+  const [form, setForm] = useState<UserProfileUpdate>(defaultForm);
 
   useEffect(() => {
-    const fetchData = async () => {
-      const token = localStorage.getItem('access_token');
-      if (token && token.split('.').length === 3) {
-        const decodedUser = jwtDecode<{
-          id: number;
-          email: string;
-          iat: number;
-          exp: number;
-        }>(token);
-        setUserId(decodedUser.id);
-        if (decodedUser.id) {
-          const res = await getUserProfile(decodedUser.id);
-          if (res.user) {
-            setForm({
-              name: res.user.Name || '',
-              desiredJobType: res.user.DesiredJobType || '',
-              desiredLocation: res.user.DesiredLocation || '',
-              desiredCompanySize: res.user.DesiredCompanySize || '',
-              careerAxis1: res.user.CareerAxis1 || '',
-              careerAxis2: res.user.CareerAxis2 || '',
-              selfPr: res.user.SelfPr || '',
-            });
-          }
+    const fetchUserData = async () => {
+      if (!user?.id) return;
+      try {
+        const res = await getUserProfile(user.id);
+        if (res.user) {
+          setForm({
+            name: res.user.Name || '',
+            desiredJobType: res.user.DesiredJobType || '',
+            desiredLocation: res.user.DesiredLocation || '',
+            desiredCompanySize: res.user.DesiredCompanySize || '',
+            careerAxis1: res.user.CareerAxis1 || '',
+            careerAxis2: res.user.CareerAxis2 || '',
+            selfPr: res.user.SelfPr || '',
+          });
         }
-      } else if (!token) {
-        router.push('/');
+      } catch (error) {
+        console.error('プロフィール取得エラー:', error);
       }
     };
-    fetchData();
-  }, [router]);
-
-  const [form, setForm] = useState<UserProfileUpdate>({
-    name: '',
-    desiredJobType: '',
-    desiredLocation: '',
-    desiredCompanySize: '',
-    careerAxis1: '',
-    careerAxis2: '',
-    selfPr: '',
-  });
+    fetchUserData();
+  }, [user]);
 
   const onChangeForm = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -64,9 +54,9 @@ export default function EditProfile() {
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!userId) return;
+    if (!user?.id) return;
     try {
-      const res = await editUserProfile(userId, form);
+      const res = await editUserProfile(user?.id, form);
       if (res.success) {
         successToast('プロフィールを更新しました');
       } else {
