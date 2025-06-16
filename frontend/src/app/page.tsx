@@ -1,26 +1,22 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { SkeltonButton } from '../components/buttons/Skeltonbutton';
 import { useRouter } from 'next/navigation';
 import { successToast } from '../lib/toast';
 import { PrimaryButton } from '../components/buttons/PrimaryButton';
+import { useAuthCheck } from '@/hooks/useAuthCheck';
 
 export default function Home() {
+  const { user } = useAuthCheck();
   const router = useRouter();
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const isLoggedIn = !!user;
 
-  useEffect(() => {
-    const token = localStorage.getItem('access_token');
-    setIsLoggedIn(!!token);
-  }, []);
-
-  const onClickLogout = () => {
+  const onClickLogout = useCallback(() => {
     localStorage.removeItem('access_token');
     successToast('ログアウトしました。');
-    setIsLoggedIn(false);
     router.push('/');
-  };
+  }, [router]);
 
   return (
     <div className='flex flex-col items-center justify-center min-h-screen bg-gray-100 p-6'>

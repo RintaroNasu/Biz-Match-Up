@@ -9,8 +9,10 @@ import {
 } from '../../../lib/api/company';
 import { MatchItem } from '@/lib/types';
 import { errorToast, successToast } from '@/lib/toast';
+import { useAuthCheck } from '@/hooks/useAuthCheck';
 
 export default function Company() {
+  useAuthCheck();
   const [companyUrl, setCompanyUrl] = useState('');
   const [matchResult, setMatchResult] = useState<MatchItem[]>([]);
   const [isScraping, setIsScraping] = useState(false);
