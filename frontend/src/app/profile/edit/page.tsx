@@ -1,12 +1,13 @@
 'use client';
+
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
-import { PrimaryButton } from '../../../components/buttons/PrimaryButton';
-import { useEffect, useState } from 'react';
-import { editUserProfile, getUserProfile } from '../../../lib/api/user';
-import { UserProfileUpdate } from '../../../lib/types';
-import { errorToast, successToast } from '@/lib/toast';
+import { PrimaryButton } from '@/components/buttons/PrimaryButton';
 import { useAuthCheck } from '@/hooks/useAuthCheck';
+import { editUserProfile, getUserProfile } from '@/lib/api/user';
+import { UserProfileUpdate } from '@/lib/types';
+import { errorToast, successToast } from '@/lib/toast';
 
 const defaultForm: UserProfileUpdate = {
   name: '',

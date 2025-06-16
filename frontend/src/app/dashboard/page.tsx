@@ -1,11 +1,11 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { User, Building, ArrowLeft } from 'lucide-react';
-import { SkeltonButton } from '../../components/buttons/Skeltonbutton';
 import Link from 'next/link';
-import { getReasons } from '@/lib/api/company';
+import { User, Building, ArrowLeft } from 'lucide-react';
+import { SkeltonButton } from '@/components/buttons/Skeltonbutton';
 import { useAuthCheck } from '@/hooks/useAuthCheck';
+import { getCompanyReasons } from '@/lib/api/company';
 
 type Reason = {
   ID: number;
@@ -22,7 +22,7 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchReasons = async () => {
       try {
-        const res = await getReasons();
+        const res = await getCompanyReasons();
         setReasons(res);
       } catch (error) {
         console.error('理由取得失敗:', error);
