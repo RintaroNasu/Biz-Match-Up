@@ -19,8 +19,8 @@ type MatchItem struct {
 }
 
 type GenerateReasonsRequest struct {
-	MatchResult []MatchItem `json:"matchResult"`
-	Questions   QuestionAnswers   `json:"questions"`
+	MatchResult []MatchItem     `json:"matchResult"`
+	Questions   QuestionAnswers `json:"questions"`
 }
 
 type QuestionAnswers struct {
@@ -28,7 +28,3 @@ type QuestionAnswers struct {
 	AttractiveService string `json:"attractiveService"`
 	RelatedExperience string `json:"relatedExperience"`
 }
-
-
-
-
