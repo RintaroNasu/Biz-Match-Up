@@ -24,7 +24,6 @@ export default function SignIn() {
   const submit = async () => {
     const res = await signIn({ email, password });
     const token = res?.token;
-
     if (token) {
       localStorage.setItem('access_token', token);
       successToast('ログインに成功しました。');

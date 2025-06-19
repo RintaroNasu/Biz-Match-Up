@@ -1,7 +1,7 @@
 'use client';
 import React, { useCallback } from 'react';
 import Link from 'next/link';
-import { SkeltonButton } from '../components/buttons/Skeltonbutton';
+import { SkeltonButton } from '../components/buttons/SkeltonButton';
 import { useRouter } from 'next/navigation';
 import { successToast } from '../lib/toast';
 import { PrimaryButton } from '../components/buttons/PrimaryButton';
