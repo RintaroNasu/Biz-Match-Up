@@ -1,8 +1,9 @@
 package main
 
 import (
-	"backend/db"
-	"backend/models"
+	"backend/internal/db"
+	"backend/internal/domain/model"
+
 	"fmt"
 )
 
@@ -10,5 +11,5 @@ func main() {
 	dbConn := db.NewDB()
 	defer fmt.Println("Successfully Migrated")
 	defer db.CloseDB(dbConn)
-	dbConn.AutoMigrate(&models.User{}, &models.Reason{})
+	dbConn.AutoMigrate(&model.User{}, &model.Reason{})
 }

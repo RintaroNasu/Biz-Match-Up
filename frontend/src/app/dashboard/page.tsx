@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { User, Building, ArrowLeft } from 'lucide-react';
-import { SkeltonButton } from '@/components/buttons/Skeltonbutton';
+import { SkeltonButton } from '@/components/buttons/SkeltonButton';
 import { useAuthCheck } from '@/hooks/useAuthCheck';
 import { getCompanyReasons } from '@/lib/api/company';
 
@@ -23,7 +23,7 @@ export default function Dashboard() {
     const fetchReasons = async () => {
       try {
         const res = await getCompanyReasons();
-        setReasons(res);
+        setReasons(res.reasons);
       } catch (error) {
         console.error('理由取得失敗:', error);
       }

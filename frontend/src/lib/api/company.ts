@@ -47,7 +47,7 @@ export const generateReasons = async (body: GenerateReasonsProps) => {
   return data.json();
 };
 
-export const createCompanyReason = async (props: PostReasonsProps) => {
+export const saveCompanyReason = async (props: PostReasonsProps) => {
   const url = 'http://localhost:8080/api/reason';
   const token = localStorage.getItem('access_token');
 

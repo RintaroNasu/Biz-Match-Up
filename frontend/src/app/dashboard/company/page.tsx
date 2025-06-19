@@ -6,7 +6,7 @@ import { useAuthCheck } from '@/hooks/useAuthCheck';
 import {
   companyScrape,
   generateReasons,
-  createCompanyReason,
+  saveCompanyReason,
 } from '@/lib/api/company';
 import { MatchItem } from '@/lib/types';
 import { errorToast, successToast } from '@/lib/toast';
@@ -61,7 +61,7 @@ export default function Company() {
 
   const onClickPostReasons = async () => {
     try {
-      await createCompanyReason({
+      await saveCompanyReason({
         content: companyReasons,
         companyName,
         companyUrl,
