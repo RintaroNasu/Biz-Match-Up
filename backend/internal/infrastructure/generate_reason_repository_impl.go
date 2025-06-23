@@ -2,13 +2,11 @@ package infrastructure
 
 import (
 	"backend/internal/domain/model"
+	"backend/internal/util"
 	"context"
 	"fmt"
-	"os"
 	"strings"
-	"time"
 
-	openai "github.com/sashabaranov/go-openai"
 	"gorm.io/gorm"
 )
 
@@ -21,37 +19,27 @@ func NewGenerateReasonRepositoryImpl() *GenerateReasonRepositoryImpl {
 }
 
 func (r *GenerateReasonRepositoryImpl) GenerateReasonFromAI(ctx context.Context, user *model.User, match []model.MatchItem, qa model.QuestionAnswers) (string, error) {
-	prompt := abuildPrompt(user, match, qa)
+	prompt := buildCompanyReasonPrompt(user, match, qa)
 
-	client := openai.NewClient(os.Getenv("OPENAI_API_KEY"))
-	ctxTimeout, cancel := context.WithTimeout(ctx, 60*time.Second)
-	defer cancel()
-
-	resp, err := client.CreateChatCompletion(ctxTimeout, openai.ChatCompletionRequest{
-		Model: openai.GPT4TurboPreview,
-		Messages: []openai.ChatCompletionMessage{
-			{Role: "user", Content: prompt},
-		},
-	})
+	result, err := util.CallOpenAIWithPrompt(ctx, prompt)
 	if err != nil {
 		return "", err
 	}
-
-	return resp.Choices[0].Message.Content, nil
+	return result, nil
 }
 
-func abuildPrompt(user *model.User, match []model.MatchItem, qa model.QuestionAnswers) string {
+func buildCompanyReasonPrompt(user *model.User, match []model.MatchItem, qa model.QuestionAnswers) string {
 	var sb strings.Builder
 	sb.WriteString("以下のユーザープロフィール、企業分析結果、本人の自由記述をもとに、その企業への志望理由を300文字以内で日本語で作成してください。\n\n")
 
 	sb.WriteString("【ユーザー情報】\n")
-	sb.WriteString("名前: " + coalesce(user.Name) + "\n")
-	sb.WriteString("志望職種: " + coalesce(user.DesiredJobType) + "\n")
-	sb.WriteString("志望勤務地: " + coalesce(user.DesiredLocation) + "\n")
-	sb.WriteString("志望企業の規模: " + coalesce(user.DesiredCompanySize) + "\n")
-	sb.WriteString("就活軸①: " + coalesce(user.CareerAxis1) + "\n")
-	sb.WriteString("就活軸②: " + coalesce(user.CareerAxis2) + "\n")
-	sb.WriteString("自己PR: " + coalesce(user.SelfPr) + "\n\n")
+	sb.WriteString("名前: " + util.Coalesce(user.Name) + "\n")
+	sb.WriteString("志望職種: " + util.Coalesce(user.DesiredJobType) + "\n")
+	sb.WriteString("志望勤務地: " + util.Coalesce(user.DesiredLocation) + "\n")
+	sb.WriteString("志望企業の規模: " + util.Coalesce(user.DesiredCompanySize) + "\n")
+	sb.WriteString("就活軸①: " + util.Coalesce(user.CareerAxis1) + "\n")
+	sb.WriteString("就活軸②: " + util.Coalesce(user.CareerAxis2) + "\n")
+	sb.WriteString("自己PR: " + util.Coalesce(user.SelfPr) + "\n\n")
 
 	sb.WriteString("【企業とのマッチ分析結果】\n")
 	for _, item := range match {

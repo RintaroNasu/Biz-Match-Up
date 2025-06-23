@@ -29,13 +29,7 @@ type LoginRequest struct {
 	Password string
 }
 
-type AuthResponse struct {
-	Message string
-	User    model.User
-	Token   string
-}
-
-func (u *AuthUsecase) SignUp(req RegisterRequest) (*AuthResponse, error) {
+func (u *AuthUsecase) SignUp(req RegisterRequest) (*model.AuthResponse, error) {
 	existingUser, err := u.Repo.FindByEmail(req.Email)
 	if err == nil && existingUser != nil {
 		return nil, err
@@ -61,14 +55,14 @@ func (u *AuthUsecase) SignUp(req RegisterRequest) (*AuthResponse, error) {
 
 	token, _ := util.GenerateToken(user.ID, user.Email)
 
-	return &AuthResponse{
+	return &model.AuthResponse{
 		Message: "サインアップ成功",
 		User:    user,
 		Token:   token,
 	}, nil
 }
 
-func (u *AuthUsecase) SignIn(req LoginRequest) (*AuthResponse, error) {
+func (u *AuthUsecase) SignIn(req LoginRequest) (*model.AuthResponse, error) {
 	user, err := u.Repo.FindByEmail(req.Email)
 	if err != nil {
 		return nil, err
@@ -79,7 +73,7 @@ func (u *AuthUsecase) SignIn(req LoginRequest) (*AuthResponse, error) {
 	}
 
 	token, _ := util.GenerateToken(user.ID, user.Email)
-	return &AuthResponse{
+	return &model.AuthResponse{
 		Message: "ログイン成功",
 		User:    *user,
 		Token:   token,

@@ -2,19 +2,17 @@ package infrastructure
 
 import (
 	"backend/internal/domain/model"
+	"backend/internal/util"
 	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"net/url"
-	"os"
 	"regexp"
 	"strings"
-	"time"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/chromedp/chromedp"
-	openai "github.com/sashabaranov/go-openai"
 	"gorm.io/gorm"
 )
 
@@ -34,7 +32,6 @@ type pageInfo struct {
 }
 
 func (r *CompanyScrapeRepositoryImpl) ScrapeCompany(ctx context.Context, companyURL string, user *model.User) ([]model.MatchItem, error) {
-	// スクレイピング
 	cdpCtx, cancel := chromedp.NewContext(ctx)
 	defer cancel()
 
@@ -91,31 +88,22 @@ func (r *CompanyScrapeRepositoryImpl) ScrapeCompany(ctx context.Context, company
 	}
 	formattedPages := sb.String()
 
-	prompt := buildPrompt(user, formattedPages)
+	prompt := buildMatchingPrompt(user, formattedPages)
 
-	client := openai.NewClient(os.Getenv("OPENAI_API_KEY"))
-	ctxTimeout, cancel := context.WithTimeout(ctx, 60*time.Second)
-	defer cancel()
-
-	resp, err := client.CreateChatCompletion(ctxTimeout, openai.ChatCompletionRequest{
-		Model: openai.GPT4TurboPreview,
-		Messages: []openai.ChatCompletionMessage{
-			{Role: "user", Content: prompt},
-		},
-	})
+	rawContent, err := util.CallOpenAIWithPrompt(ctx, prompt)
 	if err != nil {
 		return nil, errors.New("OpenAI request failed")
 	}
 
 	var result []model.MatchItem
-	if err := json.Unmarshal([]byte(resp.Choices[0].Message.Content), &result); err != nil {
+	if err := json.Unmarshal([]byte(rawContent), &result); err != nil {
 		return nil, fmt.Errorf("JSON parse error: %v", err)
 	}
 
 	return result, nil
 }
 
-func buildPrompt(user *model.User, content string) string {
+func buildMatchingPrompt(user *model.User, content string) string {
 	return strings.TrimSpace(`
 以下のユーザープロフィールと企業のWebページ情報をもとに、次の評価軸でマッチ度（1〜5の数値）と理由をJSON形式で出力してください。
 
@@ -126,13 +114,13 @@ func buildPrompt(user *model.User, content string) string {
 4. 会社の規模
 
 【ユーザー情報】
-名前: ` + coalesce(user.Name) + `
-志望職種: ` + coalesce(user.DesiredJobType) + `
-志望勤務地: ` + coalesce(user.DesiredLocation) + `
-志望企業の規模: ` + coalesce(user.DesiredCompanySize) + `
-就活軸①: ` + coalesce(user.CareerAxis1) + `
-就活軸②: ` + coalesce(user.CareerAxis2) + `
-自己PR: ` + coalesce(user.SelfPr) + `
+名前: ` + util.Coalesce(user.Name) + `
+志望職種: ` + util.Coalesce(user.DesiredJobType) + `
+志望勤務地: ` + util.Coalesce(user.DesiredLocation) + `
+志望企業の規模: ` + util.Coalesce(user.DesiredCompanySize) + `
+就活軸①: ` + util.Coalesce(user.CareerAxis1) + `
+就活軸②: ` + util.Coalesce(user.CareerAxis2) + `
+自己PR: ` + util.Coalesce(user.SelfPr) + `
 
 【企業情報（Webページから抽出）】
 ` + content + `
@@ -163,11 +151,4 @@ func buildPrompt(user *model.User, content string) string {
   }
 ]
 `)
-}
-
-func coalesce(s *string) string {
-	if s == nil {
-		return ""
-	}
-	return *s
 }

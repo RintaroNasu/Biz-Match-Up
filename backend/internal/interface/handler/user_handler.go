@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"backend/internal/domain/model"
 	"backend/internal/usecase"
 	"net/http"
 	"strconv"
@@ -12,16 +13,6 @@ type UserHandler struct {
 	Usecase *usecase.UserUsecase
 }
 
-type UpdateUserProfileRequest struct {
-	Name               string `json:"name"`
-	DesiredJobType     string `json:"desiredJobType"`
-	DesiredLocation    string `json:"desiredLocation"`
-	DesiredCompanySize string `json:"desiredCompanySize"`
-	CareerAxis1        string `json:"careerAxis1"`
-	CareerAxis2        string `json:"careerAxis2"`
-	SelfPr             string `json:"selfPr"`
-}
-
 func (h *UserHandler) EditUserProfile(c echo.Context) error {
 	idStr := c.Param("id")
 	id, err := strconv.Atoi(idStr)
@@ -29,12 +20,12 @@ func (h *UserHandler) EditUserProfile(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, echo.Map{"error": "invalid user ID"})
 	}
 
-	var req UpdateUserProfileRequest
+	var req model.UpdateUserProfileRequest
 	if err := c.Bind(&req); err != nil {
 		return c.JSON(http.StatusBadRequest, echo.Map{"error": "invalid request body"})
 	}
 
-	user, err := h.Usecase.EditUserProfile(id, usecase.UpdateUserProfileRequest(req))
+	user, err := h.Usecase.EditUserProfile(id, model.UpdateUserProfileRequest(req))
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, echo.Map{"error": err.Error()})
 	}

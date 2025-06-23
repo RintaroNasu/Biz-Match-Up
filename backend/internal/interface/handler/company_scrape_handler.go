@@ -3,13 +3,10 @@ package handler
 import (
 	"backend/internal/domain/model"
 	"backend/internal/usecase"
+	"backend/internal/util"
 	"context"
-	"fmt"
 	"net/http"
-	"os"
-	"strings"
 
-	"github.com/golang-jwt/jwt/v5"
 	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
 )
@@ -29,27 +26,10 @@ func (h *CompanyScrapeHandler) CompanyScrape(db *gorm.DB) echo.HandlerFunc {
 			return c.JSON(http.StatusBadRequest, echo.Map{"error": "invalid request"})
 		}
 
-		// トークン取得・検証
-		auth := c.Request().Header.Get("Authorization")
-		const bearer = "Bearer "
-		if !strings.HasPrefix(auth, bearer) {
-			return c.JSON(http.StatusUnauthorized, echo.Map{"error": "missing bearer token"})
+		uid, err := util.ExtractUserIDFromToken(c)
+		if err != nil {
+			return c.JSON(http.StatusUnauthorized, echo.Map{"error": err.Error()})
 		}
-		tokenStr := strings.TrimPrefix(auth, bearer)
-
-		claims := jwt.MapClaims{}
-		tkn, err := jwt.ParseWithClaims(tokenStr, claims, func(t *jwt.Token) (interface{}, error) {
-			return []byte(os.Getenv("JWT_SECRET")), nil
-		})
-		if err != nil || !tkn.Valid {
-			return c.JSON(http.StatusUnauthorized, echo.Map{"error": "invalid token"})
-		}
-
-		uid, ok := claims["id"].(float64)
-		if !ok {
-			return c.JSON(http.StatusBadRequest, echo.Map{"error": "invalid token claims"})
-		}
-		fmt.Println("User ID:", uid)
 
 		var user model.User
 		if err := db.First(&user, uint(uid)).Error; err != nil {

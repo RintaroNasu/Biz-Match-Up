@@ -2,6 +2,7 @@ package handler
 
 import (
 	"backend/internal/usecase"
+	"backend/internal/util"
 	"fmt"
 	"net/http"
 	"os"
@@ -27,26 +28,9 @@ func (h *ReasonHandler) SaveCompanyReason(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, echo.Map{"error": "invalid json"})
 	}
 
-	const bearer = "Bearer "
-	auth := c.Request().Header.Get("Authorization")
-	if !strings.HasPrefix(auth, bearer) {
-		return c.JSON(http.StatusBadRequest, echo.Map{"error": "missing bearer token"})
-	}
-
-	tokenStr := strings.TrimPrefix(auth, bearer)
-	claims := jwt.MapClaims{}
-	secret := []byte(os.Getenv("JWT_SECRET"))
-
-	tkn, err := jwt.ParseWithClaims(tokenStr, claims, func(t *jwt.Token) (interface{}, error) {
-		return secret, nil
-	})
-	if err != nil || !tkn.Valid {
-		return c.JSON(http.StatusUnauthorized, echo.Map{"error": "invalid token"})
-	}
-
-	uid, ok := claims["id"].(float64)
-	if !ok {
-		return c.JSON(http.StatusBadRequest, echo.Map{"error": "invalid claims"})
+	uid, err := util.ExtractUserIDFromToken(c)
+	if err != nil {
+		return c.JSON(http.StatusUnauthorized, echo.Map{"error": err.Error()})
 	}
 
 	err = h.Usecase.SaveCompanyReason(usecase.CompanyReasonRequest{
