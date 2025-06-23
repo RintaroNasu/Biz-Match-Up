@@ -14,9 +14,9 @@ type User struct {
 	Reasons            []Reason `gorm:"foreignKey:UserID"`
 }
 type AuthResponse struct {
-	Message string
-	User    User
-	Token   string
+	Message string `json:"message"`
+	User    User   `json:"user"`
+	Token   string `json:"token"`
 }
 type UpdateUserProfileRequest struct {
 	Name               string

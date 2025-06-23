@@ -36,9 +36,36 @@ export default function Company() {
   };
 
   const submit = async () => {
+    if (!companyUrl.trim()) {
+      errorToast('企業HPを入力してください。');
+      return;
+    }
+
+    if (!companyName.trim()) {
+      errorToast('企業名を入力してください。');
+      return;
+    }
+
+    let url;
+    try {
+      url = new URL(companyUrl);
+    } catch {
+      errorToast('有効なURLを入力してください。');
+      return;
+    }
+
+    if (url.protocol !== 'http:' && url.protocol !== 'https:') {
+      errorToast('URLは http または https で始まる必要があります。');
+      return;
+    }
     setIsScraping(true);
     try {
       const res = await companyScrape({ companyUrl });
+      const result = res.matchResult || [];
+      if (result.length === 0) {
+        errorToast('企業情報の取得に失敗しました。');
+        return;
+      }
       setMatchResult(res.matchResult || '');
     } catch (e) {
       console.error(e);
