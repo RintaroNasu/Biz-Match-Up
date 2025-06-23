@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"backend/internal/domain/model"
 	"backend/internal/usecase"
 	"net/http"
 
@@ -9,12 +10,6 @@ import (
 
 type AuthHandler struct {
 	Usecase *usecase.AuthUsecase
-}
-
-type authRes struct {
-	Message string      `json:"message"`
-	User    interface{} `json:"user"`
-	Token   string      `json:"token"`
 }
 
 func (h *AuthHandler) SignUp(c echo.Context) error {
@@ -28,7 +23,7 @@ func (h *AuthHandler) SignUp(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, echo.Map{"error": err.Error()})
 	}
 
-	return c.JSON(http.StatusOK, authRes{
+	return c.JSON(http.StatusOK, model.AuthResponse{
 		Message: res.Message,
 		User:    res.User,
 		Token:   res.Token})
@@ -45,7 +40,7 @@ func (h *AuthHandler) SignIn(c echo.Context) error {
 		return c.JSON(http.StatusUnauthorized, echo.Map{"error": err.Error()})
 	}
 
-	return c.JSON(http.StatusOK, authRes{
+	return c.JSON(http.StatusOK, model.AuthResponse{
 		Message: res.Message,
 		User:    res.User,
 		Token:   res.Token})

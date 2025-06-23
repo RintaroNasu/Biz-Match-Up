@@ -9,17 +9,7 @@ type UserUsecase struct {
 	Repo repository.UserRepository
 }
 
-type UpdateUserProfileRequest struct {
-	Name               string
-	DesiredJobType     string
-	DesiredLocation    string
-	DesiredCompanySize string
-	CareerAxis1        string
-	CareerAxis2        string
-	SelfPr             string
-}
-
-func (u *UserUsecase) EditUserProfile(id int, req UpdateUserProfileRequest) (*model.User, error) {
+func (u *UserUsecase) EditUserProfile(id int, req model.UpdateUserProfileRequest) (*model.User, error) {
 	user := &model.User{
 		Name:               &req.Name,
 		DesiredJobType:     &req.DesiredJobType,
